@@ -1,0 +1,32 @@
+#! /bin/bash 
+echo "Content-type: text/html"
+echo ""
+echo "<html><head>";
+echo "<title>All Trimble Connected Community Forums available to you</title>";
+echo "</head><body>";
+read -n $CONTENT_LENGTH QUERY_STRING_POST
+
+#echo $QUERY_STRING_POST
+#set
+
+#echo "Logging into TCC"
+#echo ""
+
+curl --insecure -f -s -m 30 -c ~/tmp/$$.cke -o ~/tmp/$$.login https://www.myconnectedsite.com/tcc/login\?force=true\&applicationkey="Get_Forums"\&$QUERY_STRING_POST
+if [ $? != "0" ]; then
+   echo "Could not log into TCC, check user name and password."
+else
+#   echo "Getting the forum information"
+   curl --insecure -s -f -m 30 -b ~/tmp/$$.cke -o ~/tmp/$$.json https://www.myconnectedsite.com/tcc/getforums
+   ./JSON_SH.pl < ~/tmp/$$.json 
+   cp ~/tmp/$$.json ~/tmp/tcc_forums
+   curl --insecure -s -f -m 30 -b ~/tmp/$$.cke -o ~/tmp/tcc_forum https://www.myconnectedsite.com/tcc/getforum?forumid=u01267725-f44e-48c5-a261-384982bf62c9
+   rm ~/tmp/$$.json 2>/dev/null
+fi
+
+echo "</body></html>";
+curl --insecure -s -f -m 30 -b ~/tmp/$$.cke -o ~/tmp/$$.json https://www.myconnectedsite.com/tcc/logoff
+
+rm ~/tmp/$$.cke ~/tmp/$$.json 2>/dev/null
+
+ 

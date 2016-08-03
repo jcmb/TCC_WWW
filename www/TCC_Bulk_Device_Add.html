@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Trimble Connected Community bulk device load</title>
+</head><body>
+<h1>Enter your Trimble Connected Community user details, device manager rights required</h1>
+<form action="cgi-bin/add_tcc_devices" method="post">
+<table>
+<tr><td>User Name:
+</td><td><input type="text" name="username" />
+</tr><tr>
+<tr><td>Organization:
+</td><td><input type="text" name="orgname" />
+</tr>
+<tr>
+<tr><td>User Password:
+</td><td><input type="text" name="password" />
+</tr>
+
+<tr>
+<tr><td>Default Device Type:
+</td><td><input type="text" name="device_type" />
+</tr>
+
+<tr><td>Password for devices:
+</td><td><input type="text" name="device_password" />
+</tr>
+</table>
+<p />
+
+Enter Serial Numbers, 1 per line<br/>
+<textarea name="serials" rows="50" cols="33">
+</textarea>
+<br><input type="submit" value="Submit" />
+
+</form>
+<p>
+</body>
+</html>

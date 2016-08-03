@@ -1,0 +1,162 @@
+#!/usr/bin/python
+
+import sys
+import cgi
+import cgitb
+import pprint
+import urllib2
+import cookielib
+import json
+import string
+
+#cgitb.enable()
+
+def main():
+    print "Content-type: text/html\n"
+    form = cgi.FieldStorage()
+    #pprint.pprint(form["username"])
+
+    if form.has_key("username") and form["username"] != "" :
+       username=form["username"].value
+    else:
+        print ("Error: You must enter a username")
+        sys.exit()
+
+    if form.has_key("orgname") and form.has_key("orgname") != "" :
+       orgname=form["orgname"].value
+    else:
+        print ("Error: You must enter a orgname")
+        sys.exit()
+
+    if form.has_key("password") and form.has_key("password") != "" :
+       password=form["password"].value
+    else:
+        print ("Error: You must enter a password")
+        sys.exit()
+
+    if form.has_key("device_type") and form.has_key("device_type") != "" :
+       device_type=form["device_type"].value
+    else:
+        print ("Error: You must enter a default device type")
+        sys.exit()
+
+    if form.has_key("device_password") and form.has_key("device_password") != "" :
+       device_password=form["device_password"].value
+    else:
+        print ("Error: You must enter a device password")
+        sys.exit()
+
+    if form.has_key("serials") and form.has_key("serials") != "" :
+       serials=form["serials"].value
+    else:
+        print ("Error: You must provide serial numbers")
+        sys.exit()
+
+#    print "Logging in<br/>"
+    cj = cookielib.CookieJar()
+#    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj),urllib2.HTTPSHandler(debuglevel=1))
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    url='https://www.myconnectedsite.com/tcc/login?username=' + username + "&orgname=" + orgname + "&password=" + password + "&applicationkey=tt_device_add";
+#    print "Getting: " + url
+    try:
+        result=opener.open(url)
+        reply=json.load(result)
+#        pprint.pprint(reply)
+#        print "<p/>"
+        accountid=reply["accountid"]
+
+    except urllib2.HTTPError, e:
+        if e.code == 500:
+            print 'Error: Incorrect Username and Password'
+        else:
+            print 'Error: Unknown error logging into TCC'
+            # other stuff...
+        return False
+
+    except  urllib2.URLError:
+        print 'Error: Could not connect to TCC'
+        return False
+
+
+
+
+    url='https://www.myconnectedsite.com/tcc/GetLoginAccount?loginaccountid=' + accountid;
+#    print "Getting: " + url
+    try:
+        result=opener.open(url)
+#        print result.info()
+#        print result.read()
+        reply=json.load(result)
+        orgid=reply["data"]["orgId"]
+
+    except urllib2.HTTPError, e:
+        if e.code == 500:
+            print 'Error: Incorrect login account info request'
+        else:
+            print 'Error: Unknown error getting login account info request: '  + str(e.code)
+            # other stuff...
+
+        return False
+
+    except  urllib2.URLError, e:
+        print 'Error: Could not connect to TCC to get loginaccountid: ' + str(e.code)
+        return False
+
+
+    serial_list=string.split(serials,"\r\n")
+    for serial in serial_list :
+       if serial != "":
+#          print serial + "*<br/>"
+          if serial.find ('-') != -1 :
+             this_device_type=serial.partition('-')[0]
+             serial=serial.rpartition('-')[2];
+#             print "has device " + this_device_type
+          else :
+             this_device_type=device_type
+
+
+          print this_device_type + '-' + serial + ": "
+
+          url='https://www.myconnectedsite.com/tcc/setdevice?orgid=' + orgid + '&devicetype=' + this_device_type +'&status=registered&password=' + device_password + '&serialnumber=' + serial + '&assetnumber=&owner=&description=&clienttype=tccjs&statusupdateretentioninterval='
+#          print url
+          try:
+              result=opener.open(url)
+              reply=json.load(result)
+              print "added<br/>"
+#              pprint.pprint(reply)
+
+          except urllib2.HTTPError, e:
+             if e.code == 500:
+              print 'Error: Invalid Device id or already exists in org <br/>'
+             else:
+                print 'Error: Unknown error adding device: '  + str(e.code) + '<br/>'
+                return False
+
+          except  urllib2.URLError, e:
+            print 'Error: Could not connect to TCC to get loginaccountid: ' + str(e.code) + '<br/>'
+            return False
+
+#          print url;
+#    pprint.pprint(serial_list)
+
+
+
+    url='https://www.myconnectedsite.com/tcc/logoff'
+#    print "Logged Off: " + url
+    try:
+        result=opener.open(url)
+
+    except urllib2.HTTPError, e:
+        if e.code == 500:
+            print 'Error: Incorrect login account info request'
+        else:
+            print 'Error: Unknown error getting login account info request: '  + str(e.code)
+            # other stuff...
+        return False
+
+#        print result.info()
+#        print result.read()
+#        reply=json.load(result)
+
+
+main()
