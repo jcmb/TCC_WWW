@@ -74,11 +74,24 @@ else:
 
 f.write ("<html><head><title>{0} devices</title>\n".format(Org))
 f.write ('<meta http-equiv="refresh" content="60">')
-f.write ("</head>")
-f.write ("<body>\n")
+f.write("""<link rel="stylesheet" type="text/css" href="/css/tcui-styles.css">
+</head>
+<body class="page">
+<div class="container clearfix">
+  <div style="padding: 10px 10px 10px 0 ;"> <a href="http://construction.trimble.com/">
+        <img src="/images/trimble-logo.jpg" alt="Trimble Logo" id="logo"> </a>
+      </div>
+  <!-- end #logo-area -->
+</div>
+<div id="top-header-trim"></div>
+<div id="content-area">
+<div id="content">
+<div id="main-content" class="clearfix">
+""")
+
 f.write ('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>'+"\n")
 f.write ('<script src="/jquery.tablesorter.min.js"></script>'+"\n")
-f.write ('<link rel="stylesheet" type="text/css" href="/style.css"></link>'+"\n")
+f.write ('<link rel="stylesheet" type="text/css" href="/css/style.css"></link>'+"\n")
 f.write ('<script>'+"\n")
 f.write ('$(document).ready(function()'+"\n")
 f.write ('{'+"\n")
