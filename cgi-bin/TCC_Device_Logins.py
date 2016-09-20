@@ -88,7 +88,6 @@ else:
 
 
 f.write ("<html><head><title>{0} devices</title>\n".format(Org))
-f.write ('<meta http-equiv="refresh" content="60">')
 f.write("""<link rel="stylesheet" type="text/css" href="/css/tcui-styles.css">
 </head>
 <body class="page">
