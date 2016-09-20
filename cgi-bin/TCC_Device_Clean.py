@@ -198,7 +198,8 @@ for device in devices:
         if device["lastLoginMethod"]==None :
            if Never_Logged_In:
              f.write ("<tr><TD>{0}</TD><TD>{1}</TD><TD>{2}</TD><TD>{3}</TD>".format(deviceName,description,"Never Active",deviceID))
-             data=opener.open("https://www.myconnectedsite.com/tcc/deletedevice?deviceid="+deviceID)
+             
+             data=opener.open("https://www.myconnectedsite.com/tcc/getdevice?deviceid="+deviceID)
              json_delete = json.load(data)
              success=json_delete["success"]
              f.write ("<td>{}</td></tr>\n".format(success))
@@ -207,7 +208,7 @@ for device in devices:
              Login_Time=datetime.strptime(device["lastLoginTime"],"%Y-%m-%d %H:%M:%S.%f")
              if Login_Time >= time_cutoff:
                  f.write ("<tr><TD>{0}</TD><TD>{1}</TD><TD>{2}</TD><TD>{3}</TD>\n".format(deviceName,description,"Inactive",deviceID))
-                 data=opener.open("https://www.myconnectedsite.com/tcc/deletedevice?deviceid="+deviceID)
+                 data=opener.open("https://www.myconnectedsite.com/tcc/getdevice?deviceid="+deviceID)
                  json_delete = json.load(data)
                  success=json_delete["success"]
                  f.write ("<td>{}</td></tr>\n".format(success))
