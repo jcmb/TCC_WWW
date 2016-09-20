@@ -221,8 +221,8 @@ if devicemanager:
   if Type_Name !="":
     f.write ("<a href=\"/cgi-bin/TCC_Device_Clean.py?USER={}&USER_ORG={}&PASS={}&ACTIVE={}\">Delete Devices that have not logged in the last {}</a><br/>\n".format(User,Org,Password,Report_Type,Type_Name))
   f.write ("<a href=\"/cgi-bin/TCC_Device_Clean.py?USER={}&USER_ORG={}&PASS={}&ACTIVE=NO\">Delete Devices that have never logged in</a><br/>\n".format(User,Org,Password))
-
-f.write ("Generated at: {0}\n".format(current_time.strftime("%Y-%m-%d %H:%M:%S")))
+else:
+  f.write ("Generated at: {0}\n".format(current_time.strftime("%Y-%m-%d %H:%M:%S")))
 f.write ("</body>\n")
 f.close
 
