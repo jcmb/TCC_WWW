@@ -9,7 +9,9 @@ from cookielib import CookieJar
 import sys
 from datetime import datetime, timedelta, date
 import cgi
-import cgitb; cgitb.enable() # Optional; for debugging only
+import cgitb; 
+
+cgitb.enable() # Optional; for debugging only
 
 
 current_time=datetime.now()
@@ -46,26 +48,39 @@ else:
 """
 arguments = cgi.FieldStorage()
 
+
 User=arguments["USER"].value
 Org=arguments["USER_ORG"].value.title()
 Password=arguments["PASS"].value
 Report_Type=arguments["ACTIVE"].value
 
+#Type_Name is set only if we allow this for a delete of old devices
 if Report_Type == "5min":
     time_cutoff=current_time-timedelta(minutes=6) #Allow for the reporting time
+    Type_Name=""
 elif Report_Type == "Hour":
     time_cutoff=current_time-timedelta(minutes=61) #Allow for the reporting time
+    Type_Name=""
 elif Report_Type == "Today":
     time_cutoff=current_time.replace(hour=1,minute=0)
+    Type_Name=""
 elif Report_Type == "24Hour":
     time_cutoff=current_time-timedelta(minutes=60*24+1) #Allow for the reporting time
+    Type_Name=""
 elif  Report_Type == "MTD":
     time_cutoff=current_time.replace(day=1)
+    Type_Name=""
 elif Report_Type == "30Day":
     time_cutoff=current_time-timedelta(days=30)
+    Type_Name="30 days"
 elif Report_Type == "YTD":
     time_cutoff=current_time.replace(day=1,month=1)
+    Type_Name=""
+elif Report_Type == "Year":
+    Type_Name="Year"
+    time_cutoff=current_time-timedelta(days=366)
 elif Report_Type == "All":
+    Type_Name=""
     time_cutoff=datetime(2010,1,1,0,0)
 else:
     f.write("Error: Unknown Active Type: {0}\n".format(Report_Type))
@@ -122,6 +137,22 @@ if success:
 else :
    print "Failed to log in"
    quit(1)
+   
+accountid=json_login["accountid"]
+
+#print "accountid", accountid
+data=opener.open("https://www.myconnectedsite.com/tcc/GetLoginAccount?loginaccountid="+accountid)
+#print data.read()
+json_account_details = json.load(data)
+
+
+
+#print "devicemanager", json_account_details["data"]["devicemanager"]
+
+
+devicemanager=json_account_details["data"]["devicemanager"]
+
+#print "devicemanager",devicemanager 
 
 #print "Getting device information"
 data=opener.open("https://www.myconnectedsite.com/tcc/getdevices")
@@ -184,6 +215,13 @@ f.write ("<tr><td>{0}</td><td>{1}</td></tr>\n".format("Inactive ("+Report_Type+"
 f.write ("<tr><td>{0}</td><td>{1}</td></tr>\n".format("Never",len(Devices_Never_Active)))
 f.write ("</table>\n")
 f.write ("<p/>\n")
+
+if devicemanager:
+  f.write ("<h3>Device Management</h3>\n")
+  if Type_Name !="":
+    f.write ("<a href=\"/cgi-bin/TCC_Device_Clean.py?USER={}&USER_ORG={}&PASS={}&ACTIVE={}\">Delete Devices that have not logged in the last {}</a><br/>\n".format(User,Org,Password,Report_Type,Type_Name))
+  f.write ("<a href=\"/cgi-bin/TCC_Device_Clean.py?USER={}&USER_ORG={}&PASS={}&ACTIVE=NO\">Delete Devices that have never logged in</a><br/>\n".format(User,Org,Password))
+
 f.write ("Generated at: {0}\n".format(current_time.strftime("%Y-%m-%d %H:%M:%S")))
 f.write ("</body>\n")
 f.close
