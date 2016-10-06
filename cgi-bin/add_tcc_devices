@@ -162,7 +162,11 @@ def main():
                 print "Custom: " + this_device_type + '-' + serial + ": "
           else :
              this_device_type=device_type
-             print "Custom: " + this_device_type + '-' + serial + ": "
+             if this_device_type in Device_IDs:
+                this_device_type=Device_IDs[this_device_type]
+                print this_device_type + '-' + serial + ": "
+             else: 
+                print "Custom: " + this_device_type + '-' + serial + ": "
 
 
 
