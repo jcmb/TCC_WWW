@@ -9,6 +9,50 @@ import cookielib
 import json
 import string
 
+
+# These device ID's are fixed for production TCC. 
+# Device_Types_Code.py 
+Device_IDs={}
+Device_IDs["SPS651"]="u0f02ab9c-1d56-438d-8c40-544abf935e51"
+Device_IDs["TSC3"]="u17f1bac1-0b2b-47e3-bc0b-ab5a6b7e1834"
+Device_IDs["GeoXR"]="u1c704add-7da4-45e0-ad16-00157d5e13d9"
+Device_IDs["SPS852"]="u28dd7846-2d43-4fa1-9b63-0b49b447ba9c"
+Device_IDs["CB430"]="u2d1f3b1a-3bc1-4a0c-9895-69c43661b273"
+Device_IDs["SNB900"]="u3be0e517-faa1-4dbd-95b4-c662cc10c484"
+Device_IDs["SNM930"]="u41e9f041-5251-41aa-b01a-88d804a56251"
+Device_IDs["Tablet"]="u456f6545-c326-4216-82fb-910a160f462b"
+Device_IDs["CD700"]="u4697a434-8800-456c-ac3b-477e92c00fbf"
+Device_IDs["TCA1"]="u482c86f9-bf46-455e-90a3-8310a62e2db7"
+Device_IDs["Mobile"]="u61a62aba-9333-4c13-9adb-0e9210d6c352"
+Device_IDs["LM80"]="u6201d1e6-63a0-4a84-b809-28d72f932714"
+Device_IDs["Oreo"]="u63bbfa94-a238-44ec-a2dc-1a831b4b45a3"
+Device_IDs["Bold9000"]="u63d37ad3-f38e-44b1-872b-73e5225330e1"
+Device_IDs["SPS550"]="u669fb254-b9ea-450f-b318-5f024df902e4"
+Device_IDs["SPS361"]="u6a304210-6827-4831-8576-9520f070868e"
+Device_IDs["Tour9630"]="u6b5cb3fb-95b5-4c51-8d30-2cd18e48fef6"
+Device_IDs["Bold9700"]="u6b6de1f9-62aa-4110-a78b-11df9f2d5e8f"
+Device_IDs["SPS850"]="u864bd5fb-7b95-45d4-8b95-b2c66ea82914"
+Device_IDs["Curve8900"]="u87718c55-f73d-4941-98cd-f37bfff860b7"
+Device_IDs["SPS461"]="u88e5e804-57fe-4048-b392-ce93c8fb1160"
+Device_IDs["SPS585"]="u8c4d00bf-121a-49c4-9dcd-5e5b3a4d7678"
+Device_IDs["SPS751"]="u8cc80c5c-7669-4c68-92a6-96ed9374b887"
+Device_IDs["SPS985"]="u9694efd7-f563-4491-bdec-2857448e506d"
+Device_IDs["SPS750"]="u9d6d3ff9-38b5-4a92-961d-2f98313db836"
+Device_IDs["SNM940"]="ua454020f-7f5d-46bb-b9ed-7c1c4236905c"
+Device_IDs["TCU"]="ua77b05e4-6f7a-4984-843d-832cf43469c2"
+Device_IDs["SPS356"]="uab02ea35-a585-444f-8669-ce1053b18241"
+Device_IDs["SPS851"]="uad51c407-f9f3-4a23-bb32-3f3a53bc8953"
+Device_IDs["SPS351"]="uba1738ce-5807-4554-a928-a0b170b791f4"
+Device_IDs["SPS551"]="uc65611b1-8509-406e-89dc-9589c8d2a759"
+Device_IDs["SP80"]="uc76faf03-b8ae-4463-961b-cdbc04e1eeea"
+Device_IDs["EM"]="uc948a1d8-8ee3-4a76-a549-29731a804c12"
+Device_IDs["CB460"]="ucdb60bf2-e1f4-4a09-9675-fd98ebda7a1c"
+Device_IDs["TSC2"]="ud6ab1c6d-5d7a-442e-93c4-451c4c192747"
+Device_IDs["Curve8310"]="ud85a062a-da01-477d-8f44-c32ffa10d351"
+Device_IDs["CB450"]="uf4808bd6-afd4-4a4d-9c75-54dbd2285d70"
+Device_IDs["SPS855"]="ufe932861-ce53-4491-92f9-c089ce745693"
+
+
 #cgitb.enable()
 
 def main():
@@ -111,11 +155,16 @@ def main():
              this_device_type=serial.partition('-')[0]
              serial=serial.rpartition('-')[2];
 #             print "has device " + this_device_type
+             if this_device_type in Device_IDs:
+                this_device_type=Device_IDs[this_device_type]
+                print this_device_type + '-' + serial + ": "
+             else: 
+                print "Custom: " + this_device_type + '-' + serial + ": "
           else :
              this_device_type=device_type
+             print "Custom: " + this_device_type + '-' + serial + ": "
 
 
-          print this_device_type + '-' + serial + ": "
 
           url='https://www.myconnectedsite.com/tcc/setdevice?orgid=' + orgid + '&devicetype=' + this_device_type +'&status=registered&password=' + device_password + '&serialnumber=' + serial + '&assetnumber=&owner=&description=&clienttype=tccjs&statusupdateretentioninterval='
 #          print url
