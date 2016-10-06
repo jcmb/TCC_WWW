@@ -153,24 +153,25 @@ def main():
 #          print serial + "*<br/>"
           if serial.find ('-') != -1 :
              this_device_type=serial.partition('-')[0]
+             this_device_id=this_device_type
              serial=serial.rpartition('-')[2];
 #             print "has device " + this_device_type
              if this_device_type in Device_IDs:
-                this_device_type=Device_IDs[this_device_type]
+                this_device_id=Device_IDs[this_device_type]
                 print this_device_type + '-' + serial + ": "
              else: 
                 print "Custom: " + this_device_type + '-' + serial + ": "
           else :
              this_device_type=device_type
              if this_device_type in Device_IDs:
-                this_device_type=Device_IDs[this_device_type]
+                this_device_id=Device_IDs[this_device_type]
                 print this_device_type + '-' + serial + ": "
              else: 
                 print "Custom: " + this_device_type + '-' + serial + ": "
 
 
 
-          url='https://www.myconnectedsite.com/tcc/setdevice?orgid=' + orgid + '&devicetype=' + this_device_type +'&status=registered&password=' + device_password + '&serialnumber=' + serial + '&assetnumber=&owner=&description=&clienttype=tccjs&statusupdateretentioninterval='
+          url='https://www.myconnectedsite.com/tcc/setdevice?orgid=' + orgid + '&devicetype=' + this_device_id +'&status=registered&password=' + device_password + '&serialnumber=' + serial + '&assetnumber=&owner=&description=&clienttype=tccjs&statusupdateretentioninterval='
 #          print url
           try:
               result=opener.open(url)
